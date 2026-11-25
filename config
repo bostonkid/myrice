@@ -1,0 +1,150 @@
+# ember — i3 config
+# needs i3 >= 4.22 (built-in gaps) or i3-gaps on older versions
+
+set $mod  Mod1
+set $term urxvt
+
+# ── palette ─────────────────────────────────────────
+# $bg and $fg now come from pywal below; these are only used by old/commented lines
+set $bg2    #1f1a2a
+set $line   #2a2436
+set $dim    #6b6275
+set $ember  #f0803c
+set $red    #e0525e
+
+# pywal colors via xrdb
+set_from_resource $bg i3wm.background #1d2021
+set_from_resource $fg i3wm.foreground #ebdbb2
+set_from_resource $c1 i3wm.color1     #fb4934
+set_from_resource $c4 i3wm.color4     #83a598
+set_from_resource $c8 i3wm.color8     #665c54
+
+font pango:JetBrains Mono 13
+
+# ── look & feel ─────────────────────────────────────
+default_border pixel 2
+default_floating_border pixel 2
+hide_edge_borders smart
+focus_follows_mouse no
+workspace_auto_back_and_forth yes
+floating_modifier $mod
+
+gaps inner 12
+gaps outer 4
+smart_gaps on
+
+# class                 border  bg   text  indicator child_border
+client.focused          $c4     $c4  $bg   $c1       $c4
+client.focused_inactive $c8     $c8  $fg   $c8       $c8
+client.unfocused        $bg     $bg  $c8   $bg       $bg
+client.urgent           $c1     $c1  $bg   $c1       $c1
+client.placeholder      $bg     $bg  $fg   $bg       $bg
+client.background       $bg
+
+# ── rofi ────────────────────────────────────────────
+bindsym $mod+d       exec --no-startup-id rofi -show drun
+bindsym $mod+Tab     exec --no-startup-id rofi -show window
+bindsym $mod+Shift+d exec --no-startup-id rofi -show run
+bindsym $mod+Shift+s exec --no-startup-id rofi -show ssh
+bindsym $mod+Shift+e exec --no-startup-id ~/.config/rofi/powermenu.sh
+bindsym $mod+Shift+w exec --no-startup-id ~/.config/rofi/wallpaper.sh
+
+# ── core bindings ───────────────────────────────────
+bindsym $mod+Return      exec --no-startup-id $term
+bindsym $mod+Shift+q     kill
+#bindsym $mod+e           exec --no-startup-id $term -e ranger
+bindsym $mod+Shift+x     exec --no-startup-id i3lock -c 15121c
+
+bindsym $mod+Shift+c     reload
+bindsym $mod+Shift+r     restart
+# old exit prompt (the rofi power menu has Logout now)
+#bindsym $mod+Shift+e     exec "i3-nagbar -t warning -m 'Exit i3?' -B 'Yes, exit' 'i3-msg exit'"
+
+# ── focus / move (vim keys) ─────────────────────────
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+bindsym $mod+a focus parent
+
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+
+# ── layout ──────────────────────────────────────────
+bindsym $mod+backslash split h
+bindsym $mod+minus     split v
+bindsym $mod+f         fullscreen toggle
+bindsym $mod+s         layout stacking
+bindsym $mod+w         layout tabbed
+bindsym $mod+t         layout toggle split
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+space       focus mode_toggle
+
+# ── scratchpad terminal (dropdown) ──────────────────
+bindsym $mod+grave scratchpad show
+for_window [instance="scratchpad"] floating enable, resize set 1100 560, move scratchpad
+exec --no-startup-id urxvt -name scratchpad
+
+# ── workspaces ──────────────────────────────────────
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+9 workspace number 9
+bindsym $mod+0 workspace number 10
+
+bindsym $mod+Shift+1 move container to workspace number 1
+bindsym $mod+Shift+2 move container to workspace number 2
+bindsym $mod+Shift+3 move container to workspace number 3
+bindsym $mod+Shift+4 move container to workspace number 4
+bindsym $mod+Shift+5 move container to workspace number 5
+bindsym $mod+Shift+6 move container to workspace number 6
+bindsym $mod+Shift+7 move container to workspace number 7
+bindsym $mod+Shift+8 move container to workspace number 8
+bindsym $mod+Shift+9 move container to workspace number 9
+bindsym $mod+Shift+0 move container to workspace number 10
+
+# ── resize mode ─────────────────────────────────────
+mode "resize" {
+    bindsym h resize shrink width  5 px or 5 ppt
+    bindsym j resize grow   height 5 px or 5 ppt
+    bindsym k resize shrink height 5 px or 5 ppt
+    bindsym l resize grow   width  5 px or 5 ppt
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym $mod+r mode "default"
+}
+bindsym $mod+r mode "resize"
+
+# ── media / hardware keys ───────────────────────────
+# polybar's pulseaudio module picks these changes up on its own
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym XF86AudioMute        exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86MonBrightnessUp   exec --no-startup-id brightnessctl set 5%+
+bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%-
+
+# screenshots: region → clipboard / full → ~/Pictures
+bindsym Print       exec --no-startup-id "maim -s | xclip -selection clipboard -t image/png"
+bindsym Shift+Print exec --no-startup-id "maim ~/Pictures/shot-$(date +%F_%H-%M-%S).png"
+
+# ── window rules ────────────────────────────────────
+# mpv floats as a small sticky picture-in-picture window
+for_window [class="mpv"] floating enable, sticky enable, resize set 1280 720, move position center
+for_window [window_role="pop-up"]  floating enable
+for_window [window_role="dialog"]  floating enable
+
+# ── autostart ───────────────────────────────────────
+# Load Xresources, restore the last pywal scheme + wallpaper, then push the
+# colors into i3 and polybar (they were read before this ran).
+exec --no-startup-id autotiling
+exec --no-startup-id sh -c 'wal -r -q; [ -x ~/.fehbg ] && ~/.fehbg; ~/.config/wal/reload.sh'
+#exec --no-startup-id sh -c 'xrdb -merge ~/.Xresources; wal -R -q; ~/.config/wal/reload.sh'
+exec --no-startup-id picom -b
+exec_always --no-startup-id ~/.config/polybar/launch.sh
