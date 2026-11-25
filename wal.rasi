@@ -1,0 +1,76 @@
+/* ~/.config/rofi/wal.rasi -- layout theme, colors from pywal */
+@import "~/.cache/wal/colors-rofi-vars.rasi"
+
+* {
+    bg:      @wal-bg;
+    fg:      @wal-fg;
+    surface: @wal-surface;
+    accent:  @wal-c4;
+    urgent:  @wal-c1;
+    active:  @wal-c2;
+    muted:   @wal-c8;
+
+    font: "JetBrainsMono Nerd Font 11";
+    background-color: transparent;
+    text-color: @fg;
+    margin: 0;
+    padding: 0;
+    spacing: 0;
+}
+
+window {
+    location: center;
+    width: 640px;
+    background-color: @bg;
+    border: 2px;
+    border-color: @accent;
+    border-radius: 6px;
+}
+
+mainbox {
+    padding: 12px;
+    spacing: 10px;
+    children: [ inputbar, message, listview, mode-switcher ];
+}
+
+inputbar {
+    background-color: @surface;
+    border-radius: 4px;
+    padding: 8px 12px;
+    spacing: 8px;
+    children: [ prompt, entry, num-filtered-rows, textbox-num-sep, num-rows ];
+}
+prompt            { text-color: @accent; }
+entry             { placeholder: "Search…"; placeholder-color: @muted; cursor: text; }
+num-filtered-rows { text-color: @muted; }
+num-rows          { text-color: @muted; }
+textbox-num-sep   { str: "/"; expand: false; text-color: @muted; }
+
+message { background-color: @surface; border-radius: 4px; padding: 8px; }
+textbox { text-color: @fg; }
+
+listview {
+    lines: 10;
+    columns: 1;
+    fixed-height: true;
+    scrollbar: true;
+    spacing: 2px;
+}
+scrollbar { handle-color: @accent; handle-width: 3px; }
+
+element                      { padding: 6px 10px; spacing: 10px; border-radius: 4px; }
+element normal.normal        { text-color: @fg; }
+element alternate.normal     { text-color: @fg; }
+element selected.normal      { background-color: @accent; text-color: @bg; }
+element normal.urgent        { text-color: @urgent; }
+element alternate.urgent     { text-color: @urgent; }
+element selected.urgent      { background-color: @urgent; text-color: @bg; }
+element normal.active        { text-color: @active; }
+element alternate.active     { text-color: @active; }
+element selected.active      { background-color: @active; text-color: @bg; }
+element-icon                 { size: 1.2em; vertical-align: 0.5; }
+element-text                 { text-color: inherit; vertical-align: 0.5; }
+
+mode-switcher   { spacing: 6px; }
+button          { padding: 6px; border-radius: 4px; text-color: @muted; }
+button selected { background-color: @surface; text-color: @accent; }
